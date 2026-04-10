@@ -1,6 +1,8 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
+// output: input, output image
+
 #define IM_TYPE	CV_8UC3
 
 using namespace cv;
@@ -29,11 +31,11 @@ Mat meanfilter(const Mat input, int n, const char* opt);
 
 int main() {
 	
-	Mat input = imread("lena.jpg", IMREAD_COLOR);
+	Mat input = imread("lena.jpg", IMREAD_COLOR);	// IMREAD_COLOR
 	Mat input_gray;
 	Mat output;
 
-	cvtColor(input, input_gray, COLOR_RGB2GRAY); // Converting image to gray
+	cvtColor(input, input_gray, COLOR_RGB2GRAY); // Converting image to gray	COLOR_RGB2GRAY
 	
 
 	if (!input.data)
@@ -44,11 +46,14 @@ int main() {
 
 	namedWindow("Grayscale", WINDOW_AUTOSIZE);
 	imshow("Grayscale", input_gray);
+
 	output = meanfilter(input_gray, 3, "mirroring"); //Boundary process: zero-paddle, mirroring, adjustkernel
+	
+	// output = meanfilter(input_gray, 3, "zero-paddle"); 
+	// output = meanfilter(input_gray, 3, "adjustkernel");
 
 	namedWindow("Mean Filter", WINDOW_AUTOSIZE);
 	imshow("Mean Filter", output);
-
 
 	waitKey(0);
 
@@ -81,7 +86,7 @@ Mat meanfilter(const Mat input, int n, const char* opt) {
 					for (int b = -n; b <= n; b++) {
 
 						if ((i + a <= row - 1) && (i + a >= 0) && (j + b <= col - 1) && (j + b >= 0)) { //if the pixel is not a border pixel
-							sum1 += kernelvalue*(float)(input.at<G>(i + a, j + b));
+							sum1 += kernelvalue * (float)(input.at<G>(i + a, j + b));
 						}
 					}
 				}
@@ -92,29 +97,30 @@ Mat meanfilter(const Mat input, int n, const char* opt) {
 				float sum1 = 0.0;
 				for (int a = -n; a <= n; a++) { // for each kernel window
 					for (int b = -n; b <= n; b++) {
-
-						if (i + a > row - 1) {  //mirroring for the border pixels
-							tempa = i - a;
+						//mirroring for the border pixels
+						if (i + a > row - 1) {  
+							tempa = i - a;		
 						}
-						else if (i + a < 0) {
-							tempa = -(i + a);
-						}
-						else {
-							tempa = i + a;
-						}
-						if (j + b > col - 1) {
-							tempb = j - b;
-						}
-						else if (j + b < 0) {
-							tempb = -(j + b);
+						else if (i + a < 0) {	
+							tempa = -(i + a);	
 						}
 						else {
-							tempb = j + b;
+							tempa = i + a;	
 						}
-						sum1 += kernelvalue*(float)(input.at<G>(tempa, tempb));
+						
+						if (j + b > col - 1) {	
+							tempb = j - b;		
+						}
+						else if (j + b < 0) {	
+							tempb = -(j + b);	
+						}
+						else {
+							tempb = j + b;	
+						}
+						sum1 += kernelvalue*(float)(input.at<G>(tempa, tempb));	
 					}
 				}
-				output.at<G>(i, j) = (G)sum1;
+				output.at<G>(i, j) = (G)sum1;	
 			}
 			
 			else if (!strcmp(opt, "adjustkernel")) {
@@ -123,8 +129,8 @@ Mat meanfilter(const Mat input, int n, const char* opt) {
 				for (int a = -n; a <= n; a++) { // for each kernel window
 					for (int b = -n; b <= n; b++) {
 						if ((i + a <= row - 1) && (i + a >= 0) && (j + b <= col - 1) && (j + b >= 0)) {
-							sum1 += kernelvalue*(float)(input.at<G>(i + a, j + b));
-							sum2 += kernelvalue;
+							sum1 += kernelvalue*(float)(input.at<G>(i + a, j + b));	
+							sum2 += kernelvalue;	
 						}
 					}
 				}

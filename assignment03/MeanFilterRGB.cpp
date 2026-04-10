@@ -40,7 +40,7 @@ int main() {
 
 	namedWindow("Original", WINDOW_AUTOSIZE);
 	imshow("Original", input);
-	output = meanfilter(input, 3, "zero-paddle"); //Boundary process: zero-paddle, mirroring, adjustkernel
+	output = meanfilter(input, 7, "zero-paddle"); //Boundary process: zero-paddle, mirroring, adjustkernel
 
 	namedWindow("Mean Filter", WINDOW_AUTOSIZE);
 	imshow("Mean Filter", output);
